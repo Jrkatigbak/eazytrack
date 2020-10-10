@@ -1,0 +1,56 @@
+.logo-header .logo .navbar-brand {
+    width: 160px;
+}
+
+.logo-header[data-background-color=blue] {
+    background: #355959!important;
+}
+
+.navbar-header[data-background-color=blue2] {
+    background: #3d6161!important;
+}
+
+.sidebar.sidebar-style-2 .nav.nav-primary>.nav-item.active>a {
+    background: #355959!important;
+}
+
+.bg-primary-gradient {
+    background: linear-gradient(-45deg,#264a4a,#497171)!important;
+}
+
+.btn-hotpink {
+    background-color: #355959;
+    color: white;
+}
+
+.text-hotpink {
+    color: #355959 !important;
+}
+
+.modal-header {
+    background: #355959;
+    color: #fff;
+}
+
+
+a, .btn-link {
+    text-decoration: none !important;
+}
+
+.text-primary {
+    color: #355959 !important;
+}
+
+.text-primary, .text-primary a {
+    color: #355959!important;
+}
+
+.card1{
+    background-color: #355959;
+    color: white;
+}
+
+.bg-hotpink {
+    background-color: #355959 !important;
+    color: #fff !important;
+}
