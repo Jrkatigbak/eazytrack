@@ -33,7 +33,7 @@ class Invoice_model extends CI_Model{
     ########################
 
     public function getInvoiceContent($invoice_nos){
-        $this->db->select('transactions.reference_nos,transactions.created_at,
+        $this->db->select('transactions.reference_nos,transactions.created_at, transactions.total, transactions.discount, 
                             plans.name as plan_name,plans.actual_price as plan_price');
         $this->db->join('plans', 'plans.id = transactions.id_plans');
         $this->db->where('invoice_nos', $invoice_nos);

@@ -114,6 +114,8 @@
             // async: false,
             dataType: 'json',
             success: function(response){
+                console.log(response);
+
                 let total = 0;
                 $("#invTable").html('');
                 for(var i = 0; i < response.length; i++){
@@ -125,14 +127,14 @@
                     '<tr>'
                     );
                     $(".invdate").text(response[i].created_at);
-                    total = parseFloat(total) + parseFloat(response[i].plan_price);
+                    total = parseFloat(response[i].total) - parseFloat(response[i].discount);
+                    $(".invsubtotal").text('£' + formatCurrency(response[i].total));
+                    $(".invdiscount").text('£' + formatCurrency(response[i].discount));
+                    $(".invtotal").text('£' + formatCurrency(total));
                 }
                 
                 $(".invoice_nos").text(invoice_nos);
-                $(".invsubtotal").text('£' + formatCurrency(total));
-                $(".invdiscount").text('£' + formatCurrency(total));
-                $(".invtotal").text('£' + formatCurrency(total));
-               
+
               
             },
             error: function(){
