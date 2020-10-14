@@ -33,7 +33,17 @@ class Plans_model extends CI_Model{
         $data = $this->input->post();
         $this->db->where('id',$id);
         return $this->db->update('plans',$data);
-      }
+    }
+
+    public function getPlansDiscount($id_plan = 0, $minimum_order = 0){
+        if($id_plan != ''){
+            $this->db->where('id_plan',$id_plan);
+        }
+        if($minimum_order != ''){
+            $this->db->where('minimum_order <=',$minimum_order);
+        }
+        return $this->db->get('plan_discount');
+    }
 
 	
 }

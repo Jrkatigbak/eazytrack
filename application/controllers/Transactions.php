@@ -7,6 +7,7 @@ class Transactions extends CI_Controller {
         parent::__construct();
 		$this->load->model('transaction_model');
 		$this->load->model('couriers_model');
+		$this->load->model('plans_model');
 		if($_SESSION['id_user'] == ''){
             redirect('welcome');
         }
@@ -68,20 +69,32 @@ class Transactions extends CI_Controller {
 		return true;
 	}
 
-	public function saveBulkShipments($id_plans){
+	public function saveBulkShipments($id_plans, $from_stripe = ''){
 		$status = 1;
         if($id_plans == 1){
             $status = 2;
+		}
+
+		$bulk_shipments = $data['data']['data_shipments'];
+		$payment_method = 'paypal';
+		if($from_stripe != ''){
+			$bulk_shipments = $_SESSION['bulkUploadTableData']['data_shipments'];
+			$payment_method = 'stripe';
 		}
 		
 		$data = $this->input->post();
 		$details['invoice_nos'] = $this->customlib->getInvoiceNumber();
 		$details['id_plans'] = $id_plans;
 		$details['status'] = $status; 
-		$details['payment_method'] = $_SESSION['transaction_payment_method'] ?? 'paypal';
+		$details['payment_method'] = $payment_method;
 		$details['created_at'] = date("Y-m-d h:i:sa");
 
-		foreach($data['data']['data_shipments'] as $shipment){
+		$details['total'] = $this->customlib->getTransactionTotal($id_plans) *
+							count($bulk_shipments);
+
+		$details['discount']  = $this->customlib->getTransactionDiscount($id_plans, count($bulk_shipments), $details['total'] );
+
+		foreach($bulk_shipments as $shipment){
 			// SAVE SHIPMENTS ON AFTERSHIP DASHBOARD
 			$this->call_api_saveShipment($shipment['tracking_number'] , $shipment['courier_slug']);
 
@@ -89,6 +102,10 @@ class Transactions extends CI_Controller {
 			$details['courier_code'] = $shipment['courier_slug'];
 
 			$last_id = $this->transaction_model->saveBulkShipments($details);
+		}
+
+		if($from_stripe != ''){
+			redirect(base_url()."transactions/addMultipleShipments/".$id_plans);
 		}
 
 	}
@@ -380,15 +397,17 @@ class Transactions extends CI_Controller {
 				$this->load->library('CSVReader');
 				$raw_shipments = $this->csvreader->parse_file($file);
 				$data['couriers'] = $this->couriers_model->get()->result();
-				$plans = $this->customlib->getPlanByID($id_plan);
-				$data['total'] = count($raw_shipments) * $plans->actual_price;
+				$actual_price = $this->customlib->getTransactionTotal($id_plan);
+				$data['total'] = count($raw_shipments) * $actual_price;
+
+				$data['discount']  = $this->customlib->getTransactionDiscount($id_plan, count($raw_shipments), $data['total'] );
 
 				$batch_data = array();
 				foreach($raw_shipments as $shipment){
 					$couriers = $this->customlib->getCourierByTrackingNumber( $shipment['tracking_number'] );
 					$couriers = json_decode($couriers, true);
-					$courier = $couriers['data']['couriers'][0]['name'];
-					$courier_slug = $couriers['data']['couriers'][0]['slug'];
+					$courier = $couriers['data']['couriers'][0]['name'] ?? '';
+					$courier_slug = $couriers['data']['couriers'][0]['slug']  ?? '';
 
 					$batch_data[] = array(
 						"tracking_number" => $shipment['tracking_number'],

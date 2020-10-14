@@ -40,7 +40,7 @@ class StripeController2 extends CI_Controller {
         require_once('application/libraries/stripe-php/init.php');
         \Stripe\Stripe::setApiKey($this->config->item('stripe_secret'));
         header('Content-Type: application/json');
-        $YOUR_DOMAIN = 'http://localhost/parcel-tracking-website/';
+        $YOUR_DOMAIN = 'http://localhost/eazytrack/';
         $checkout_session = \Stripe\Checkout\Session::create([
         'payment_method_types' => ['card'],
         'line_items' => [[
@@ -59,6 +59,46 @@ class StripeController2 extends CI_Controller {
         'cancel_url' => base_url(),
         ]);
         echo json_encode(['id' => $checkout_session->id]);
+    }
+
+    public function saveDataInTableSession(){
+		$_SESSION['bulkUploadTableData'] = $this->input->post('data');
+	}
+
+    public function stripePaymentBulkShipments($id_plans){
+        $plan = $this->plans_model->getPlans($id_plans)->row();
+        // print_r($_SESSION['bulkUploadTableData']['data_shipments']);die(count($_SESSION['bulkUploadTableData']['data_shipments']).'xxx');
+
+        $total = $this->customlib->getTransactionTotal($id_plans) *
+							count($_SESSION['bulkUploadTableData']['data_shipments']);
+
+        $discount  = $this->customlib->getTransactionDiscount($id_plans, count($_SESSION['bulkUploadTableData']['data_shipments']), $total );
+        $unit_amount = (floatval($total ?? 0) - floatval($discount ?? 0)) * 100;
+
+
+        require_once('application/libraries/stripe-php/init.php');
+        \Stripe\Stripe::setApiKey($this->config->item('stripe_secret'));
+        header('Content-Type: application/json');
+        $YOUR_DOMAIN = 'http://localhost/eazytrack/';
+        $checkout_session = \Stripe\Checkout\Session::create([
+        'payment_method_types' => ['card'],
+        'line_items' => [[
+            'price_data' => [
+            'currency' => 'GBP',
+            'unit_amount' => $unit_amount,
+            'product_data' => [
+                'name' => $plan->name,
+                'images' => ["https://i.imgur.com/EHyR2nP.png"],
+            ],
+            ],
+            'quantity' => 1,
+        ]],
+        'mode' => 'payment',
+        'success_url' => base_url() . 'transactions/saveBulkShipments/'. $id_plans  .'/from_stripe',
+        'cancel_url' => base_url() . 'transactions/createMultipleShipments/'. $id_plans,
+        ]);
+        echo json_encode(['id' => $checkout_session->id]);
+
     }
    
 }

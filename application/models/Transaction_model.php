@@ -51,6 +51,8 @@ class Transaction_model extends CI_Model{
             'courier_code'      => $details['courier_code'],
             'payment_method'    => $details['payment_method'],
             'status'            => $details['status'],
+            'discount'          => $details['discount'],
+            'total'             => $details['total'],
             'created_at'        => $details['created_at'],
         );
         $this->db->insert('transactions',$data);

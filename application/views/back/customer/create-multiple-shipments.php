@@ -1,4 +1,5 @@
 <?php $this->load->view('back/template/header');?>
+
 <style>
 .pm-active{
     border: 4px solid #fff;
@@ -63,7 +64,7 @@
                                             </form>
                                             
                                             <div class="table-responsive mt-3">
-                                                <table id="multi-filter-select" class="display table table-striped table-hover" >
+                                                <table id="table" class="display table table-striped table-hover" >
                                                     <thead>
                                                         <tr>
                                                             <th>Tracking Number</th>
@@ -104,10 +105,10 @@
                                                 <h3>Order Summary</h3>
                                                 <hr>
                                                 <p>Sub-total <span class="pull-right" id="subtotal"> <?= number_format($total ?? 0,2)?></span></p>
-                                                <p>Discount <span class="pull-right"> 0.00</span></p>
+                                                <p>Discount <span class="pull-right" id="discount"> <?= number_format($discount ?? 0,2)?></span></p>
                                                 <h3>Total 
                                                     <span class="pull-right">£ 
-                                                        <span id="total"> <?= number_format($total ?? 0,2)?></span>
+                                                        <span id="total"> <?= number_format( ($total ?? 0) - ($discount ?? 0),2)?></span>
                                                     </span>
                                                 </h3>
                                                 <hr>
@@ -118,7 +119,7 @@
                                                         <img class="img-responsive pm pm-paypal"  style="width:30%;"
                                                             src="<?= base_url()?>/public/front/dist/img/paypal.jpg" alt=""
                                                             onmouseover="paypal_hover(this);" onmouseout="paypal_unhover(this);">       
-                                                        <img class="img-responsive pm pm-stripe"  style="width:30%;"
+                                                        <img class="img-responsive pm pm-stripe" disabled  style="width:30%;"
                                                             src="<?= base_url()?>/public/front/dist/img/stripe.jpg" alt=""
                                                             onmouseover="stripe_hover(this);" onmouseout="stripe_unhover(this);">       
                                                     </div>   
@@ -127,7 +128,7 @@
                                                 <!-- <a href="#" class="btn btn-warning pull-right checkout btn-lg">Checkout with Payal</a> -->
                                                 <div class="proceedPayment" data-amount=""><button class="btn btn-warning btn-block btn-md proceed"><i class="fa fa-share"></i> Confirm & Payment</button></div>
                                                 
-                                                <button class="btn btn-stripe btn-block stripeButton" id="checkout-button" style="display:none">Stripe Checkout</button>
+                                                <button class="btn btn-primary btn-block stripeButton" id="checkout-button" style="display:none"><i class="fa fa-credit-card"></i> Stripe Checkout</button>
                                                 <div class="paypalButton" data-amount="<?= number_format($total ?? 0,2)?>" id="paypal-button" style="display:none"></div>
                                             
 
@@ -189,12 +190,13 @@
     <script src="https://www.paypalobjects.com/api/checkout.js"></script>
 
 
+
     <script>
         //PAYPAL SCRIPTS
 	paypal.Button.render({
     
             
-    env: 'production', // sandbox | production
+    env: 'sandbox', // sandbox | production
 
 
 
@@ -242,7 +244,7 @@
 
         // Script to update permissions
         var table_data = [];
-        $('#multi-filter-select tr').each(function(row,tr){
+        $('#table tr').each(function(row,tr){
             if($(tr).find('td:eq(0)').text() == ''){
             }else{
                 var sub = {
@@ -278,8 +280,75 @@
     //PAYPAL SCRIPTS
     </script>
 
-    <!--PAYPAL SCRIPTS-->     
+    <!--PAYPAL SCRIPTS-->  
 
+
+<!-- Stripe -->
+<script type="text/javascript">
+    // Create an instance of the Stripe object with your publishable API key
+    // var stripe = Stripe("pk_live_51HPhT7GSoZFG75Kw0b6Cx3Mvggw2QtQUvTIxTl0jmwqScCGtJdg2nMXaRl5CsJD9o5lg0uAXd0kk7dz8Abl0vRpQ00PDE3AtVo");
+    var stripe = Stripe("pk_test_51HPhT7GSoZFG75KwqZEb0NDkNr9Q2JXwG55jNjV0iFqV60J0qMbvHKpLrEl7hsTeY6S4xCyP13Jn9eUHO4WM1Tc100DJH7JunO");
+
+    var checkoutButton = document.getElementById("checkout-button");
+    checkoutButton.addEventListener("click", function () {
+
+        // Script to update permissions
+        var table_data = [];
+        $('#table tr').each(function(row,tr){
+            if($(tr).find('td:eq(0)').text() == ''){
+            }else{
+                var sub = {
+                'tracking_number' : $(tr).find('td:eq(0)').text(),
+                'courier_slug' : $(tr).find('td:eq(1) #courier_slug').val(),
+                };
+            } 
+            table_data.push(sub);
+        });
+        table_data = table_data.filter(function(e){return e}); 
+        var data = {'data_shipments' : table_data}
+        let id_plans = '<?= $this->uri->segment('3');?>';
+
+        //Save table data in session
+        $.ajax({
+            type: 'ajax',
+            method: 'post',
+            url: base_url + 'stripeController2/saveDataInTableSession/',
+            data: {
+                data: data
+            },
+            dataType: 'text',
+            success: function(response){ 
+
+                fetch("<?= base_url()?>/stripeController2/stripePaymentBulkShipments/" + id_plans, {
+                    method: "POST",
+                })
+                    .then(function (response) {
+                    return response.json();
+                    })
+                    .then(function (session) {
+                    return stripe.redirectToCheckout({ sessionId: session.id });
+                    })
+                    .then(function (result) {
+                    // If redirectToCheckout fails due to a browser or network
+                    // error, you should display the localized error message to your
+                    // customer using error.message.
+                    if (result.error) {
+                        alert(result.error.message);
+                    }
+                    })
+                    .catch(function (error) {
+                    console.error("Error:", error);
+                    });
+
+            },
+            error: function(){
+                swal('Could not edit data');
+            }
+        });
+
+
+    });
+  </script>
 
 
     <?php $this->load->view('back/template/footer');?>
@@ -347,7 +416,26 @@
     
     $(document).on('click', ".proceed", function () {
 
+        // Script to update permissions
+        var table_data = [];
+        $('#table tr').each(function(row,tr){
+            if($(tr).find('td:eq(0)').text() == ''){
+            }else{
+                var sub = {
+                'tracking_number' : $(tr).find('td:eq(0)').text(),
+                'courier_slug' : $(tr).find('td:eq(1) #courier_slug').val(),
+                };
+            } 
+            table_data.push(sub);
+        });
+        table_data = table_data.filter(function(e){return e}); 
+        if(table_data.length == 0){
+            swal('Your shipment is empty','','info'); return;
+        }
+        
+
         let payment_method = $(this).val();
+
 
         if(payment_method == ''){
             swal('Choose your preferred payment method','','info'); return;
@@ -393,6 +481,6 @@
         $('body').addClass('loaded');
         $('h1').css('color','#222222');	
     });
-    </script>
+</script>
 
     

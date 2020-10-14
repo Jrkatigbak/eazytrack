@@ -33,6 +33,10 @@
 	<link rel="stylesheet" href="<?= base_url() ?>public/custom/back/css/style.css">
 	<link rel="stylesheet" href="<?= base_url()?>public/custom/back/css/preloader.css">
 
+	<!-- Stripe -->
+	<script src="https://polyfill.io/v3/polyfill.min.js?version=3.52.1&features=fetch"></script>
+	<script src="https://js.stripe.com/v3/"></script>
+
 	<!-- ManyChat -->
 	<script src="//widget.manychat.com/116448190198930.js" async="async"></script>
 </head>

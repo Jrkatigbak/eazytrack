@@ -51,7 +51,11 @@
                                 </table>
                             </div>
                         </div>
-                        <h3 for="" class="pull-right">Total <span class="invtotal"></span></h3>
+                        <div class="div pull-right">
+                            <h3 for="" >Sub-total <span class="invsubtotal"></span></h3><br>
+                            <h3 for="" >Discount <span class="invdiscount"></span></h3><br>
+                            <h3 for="" >Total <span class="invtotal"></span></h3>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -11,7 +11,7 @@
         <div class="content">
 				<div class="page-inner">
 					<div class="page-header">
-						<h4 class="page-title">Claims</h4>
+						<h4 class="page-title">Invoice</h4>
 						<ul class="breadcrumbs">
 							<li class="nav-home">
 								<a href="#">
@@ -33,9 +33,8 @@
 							?>
 							<div class="card">
 								<div class="card-header">
-									<div class="card-title">Transactions Lists
-									<a href="<?= base_url() ?>claims" class="btn btn-hotpink ml-auto pull-right" style="color:#fff">
-									<i class="fa fa-plus"></i>  Add New Claims</a>
+									<div class="card-title">Invoice Lists
+
 									</div>
 									
 								</div>
@@ -130,6 +129,8 @@
                 }
                 
                 $(".invoice_nos").text(invoice_nos);
+                $(".invsubtotal").text('£' + formatCurrency(total));
+                $(".invdiscount").text('£' + formatCurrency(total));
                 $(".invtotal").text('£' + formatCurrency(total));
                
               

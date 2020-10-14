@@ -26,7 +26,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $local      = 'http://localhost/eazytrack/';
 $staging    = 'http://staging.eazytrack.co.uk/';
 $live       = 'https://eazytrack.co.uk/';
-$config['base_url'] = $live;
+$config['base_url'] = $local;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,10 +41,10 @@ $config['base_url'] = $live;
 $config['index_page'] = 'index.php';
 
 
-$config['stripe_key'] = 'pk_live_51HPhT7GSoZFG75Kw0b6Cx3Mvggw2QtQUvTIxTl0jmwqScCGtJdg2nMXaRl5CsJD9o5lg0uAXd0kk7dz8Abl0vRpQ00PDE3AtVo';
-$config['stripe_secret'] = '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';
-// $config['stripe_key'] = 'pk_test_51HPhT7GSoZFG75KwqZEb0NDkNr9Q2JXwG55jNjV0iFqV60J0qMbvHKpLrEl7hsTeY6S4xCyP13Jn9eUHO4WM1Tc100DJH7JunO';
-// $config['stripe_secret'] = 'sk_test_51HPhT7GSoZFG75KwRRDWV6CqGmBsAEOqmnH1lXttg8Oo7Hf2SHh2PtQim5AbieDRjAZR2rB5EUOkUbesWqqEAAZR00N2VG5Mkl';
+// $config['stripe_key'] = 'pk_live_51HPhT7GSoZFG75Kw0b6Cx3Mvggw2QtQUvTIxTl0jmwqScCGtJdg2nMXaRl5CsJD9o5lg0uAXd0kk7dz8Abl0vRpQ00PDE3AtVo';
+// $config['stripe_secret'] = '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';
+$config['stripe_key'] = 'pk_test_51HPhT7GSoZFG75KwqZEb0NDkNr9Q2JXwG55jNjV0iFqV60J0qMbvHKpLrEl7hsTeY6S4xCyP13Jn9eUHO4WM1Tc100DJH7JunO';
+$config['stripe_secret'] = 'sk_test_51HPhT7GSoZFG75KwRRDWV6CqGmBsAEOqmnH1lXttg8Oo7Hf2SHh2PtQim5AbieDRjAZR2rB5EUOkUbesWqqEAAZR00N2VG5Mkl';
 
 /*
 |--------------------------------------------------------------------------

@@ -105,6 +105,20 @@ class Customlib
 		/* close cURL resource */
 		curl_close($ch);
     }
+
+    public function getTransactionTotal($id_plan){
+        $discount_details = $this->CI->plans_model->getPlans($id_plan)->row();
+        return $discount_details->actual_price;
+    }
+
+    public function getTransactionDiscount($id_plan, $count, $total){
+        $discount = 0;
+        $discount_details = $this->CI->plans_model->getPlansDiscount($id_plan, $count );
+        if($discount_details->num_rows() > 0){
+            $discount = $discount_details->row()->discount;
+        }
+        return  $total_discount =  $total * ($discount/100); // GET DISCOUNT BY PERCENTAGE
+    }
     
     
 }

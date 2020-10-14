@@ -6,8 +6,6 @@
         <section id="banner" style="background: linear-gradient(#1b1b1b96, #1b1b1b96), url(<?= base_url() ?>public/front/dist/img/banner.jpg);">
             <div class="container banner-content">
                 <h1>eazytrack</h1>
-                <p>Provides Quality Service and Professional Care You deserve</p>
-
                 <p class="free-track-caption">Track Your Parcel Online For FREE ! Just Simply Enter One Or More Parcel Numbers.</p>
                 <div class="container">
                     <div class="input-group mb-3">
@@ -18,7 +16,7 @@
                     </div>
                 </div>
 
-                <div class="free-track-caption">
+                <div class="free-track-caption mt-5">
 
                     <?php
                     $class = "subscribe";
@@ -31,8 +29,14 @@
                     }
                     ?>
 
-                    Looking for regular track event updates? 
-                    <a class="<?= $class?> btn btn-primary btn-md" name="subscribe" data-id="2">Buy Now</a>                                                              
+                    <!-- Looking for regular track event updates?  -->
+                    Have your consignment continously tracked!
+                    <a class="<?= $class?> btn btn-primary btn-md" name="subscribe" data-id="2">Buy Now</a>     
+
+                    <br>
+                    Provides Quality Service and Professional Care You deserve   
+
+
                 </div>
             </div>
         </section>

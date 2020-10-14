@@ -2,7 +2,7 @@
 	paypal.Button.render({
  
 		
-		env: 'production', // sandbox | production
+		env: 'sandbox', // sandbox | production
 
 
 
