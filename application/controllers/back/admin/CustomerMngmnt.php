@@ -43,5 +43,22 @@ class CustomerMngmnt extends CI_Controller{
         echo json_encode($data);
     }
 
+    public function update_status(){
+
+        $up_status = $this->customerMngmnt_model->update_status();
+
+        if($up_status > 0) 
+        {
+        $this->session->set_flashdata('msg',"User Status successfully updated");
+        $this->session->set_flashdata('msg_class','alert success');
+        }
+        else
+        {
+        $this->session->set_flashdata('msg',"User Status successfully updated");
+        $this->session->set_flashdata('msg_class','alert danger');
+        }
+        return redirect ('back/admin/customerMngmnt/index');
+
+    }
 
 }

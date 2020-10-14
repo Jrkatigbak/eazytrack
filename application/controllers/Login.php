@@ -28,6 +28,12 @@ class Login extends CI_Controller {
 		}
 
 		foreach($users as $user){
+			
+			// Kapag 1 ito ay inactive
+			if($user->status == 1){
+				echo 'inactive';return;
+			}
+
 			if(password_verify($this->input->post('password'),$user->password) ){
 				$user_sess = array(
 					'id_user'       => $user->id_user,
@@ -61,5 +67,11 @@ class Login extends CI_Controller {
 		$this->session->set_flashdata('sys_msg',$msg);
 		$this->session->set_flashdata('sys_msg_type','success');
         redirect('welcome');
-    }
+	}
+	
+	// protected function credentials(Request $Request){
+
+	// 	$credentials = $Request->only($this->username(),'password'); // getting data from login form
+	// 	return array_add($credentials,'status',0); // 0 means all fine and can login
+	// }
 }

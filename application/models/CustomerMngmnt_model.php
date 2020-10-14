@@ -27,6 +27,26 @@ class CustomerMngmnt_model extends CI_Model{
             return $this->db->update('users',$data);
         }
         
-        
+
+        public function update_status(){
+
+            $id_user = $this->input->post('id_user');
+            $current_status = $this->input->post('current_status');
+
+            if($current_status == 0){
+                $current_status = 1;
+            }else{
+                $current_status = 0;
+            }
+
+            
+
+            $data = array(
+                'status' => $current_status
+            );
+
+            $this->db->where('id_user',$id_user);
+            return $this->db->update('users',$data);
+        }
       
 }

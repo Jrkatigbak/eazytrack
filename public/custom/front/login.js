@@ -27,6 +27,9 @@ function login(){
             if(response == 'false_password'){
                 swal('Please check your password','','error');return;
             }
+            if(response == 'inactive'){
+                swal('Your account is currently suspended in the system','Please contact system administrator','error');return;
+            }
             if(response == 1){
                 window.location.replace( base_url + 'back/admin/dashboard');
             }
